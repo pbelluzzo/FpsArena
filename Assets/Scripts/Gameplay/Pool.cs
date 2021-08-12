@@ -10,5 +10,12 @@ namespace Gameplay
         public string tag;
         public int size;
         public GameObject prefab;
+
+        public Pool(string poolTag, int poolSize, GameObject poolPrefab)
+        {
+            tag = poolTag;
+            size = poolSize;
+            prefab = poolPrefab;
+        }
     }
 }

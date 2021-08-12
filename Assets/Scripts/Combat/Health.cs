@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 namespace Combat
 {
-    public class Health : MonoBehaviour, IcanDie
+    public class Health : MonoBehaviour, ICanDie
     {
         [Tooltip("Character's current health")]
         [SerializeField] private int health = 100;

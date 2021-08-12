@@ -131,7 +131,7 @@ MonoBehaviour:
   cameraTransform: {fileID: 7172786066956929180}
   characterSpeed: 4
   runMultiplier: 1.5
-  jumpHeight: 0.7
+  jumpHeight: 1
   canWalkInJump: 1
   groundCheck: {fileID: 6962341745261552907}
   groundDistance: 0.1

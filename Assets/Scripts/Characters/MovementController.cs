@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Player 
+namespace Characters 
 { 
     public class MovementController : MonoBehaviour
     {
@@ -14,6 +14,7 @@ namespace Player
         [SerializeField] Transform cameraTransform;
         private float rotationX = 0f;
 
+        #region Movement
         [Header("Movement Control")]
         [SerializeField] private float characterSpeed;
         [SerializeField] private float runMultiplier;
@@ -21,16 +22,16 @@ namespace Player
         [Tooltip("If true, the player can controll the character even while not grounded")]
         [SerializeField] private bool canWalkInJump = true;
 
-        private Vector3 jumpingMovement;
         private Vector3 verticalVelocity;
         private bool running = false;
 
         public Transform groundCheck;
-        public float groundDistance = 0.1f;
+        [SerializeField] float groundDistance = 0.1f;
         [Tooltip("Selected layer will be considered as ground")]
         public LayerMask groundMask;
          private bool isGrounded = true;
         private bool inJumpMovement = false;
+        #endregion
 
         private CharacterController controller;
 
@@ -50,12 +51,12 @@ namespace Player
         {
             CheckIfGrounded();
             JumpRoutine();
+            CalculateVerticalMovement();
             MovementRoutine();
             RotateRoutine();
-            CalculateVerticalMovement();
         }
 
-        private void JumpRoutine()
+        private void JumpRoutine() //JUMP INPUT
         {
             if (Input.GetButtonDown("Jump") && isGrounded)
             {
@@ -72,7 +73,6 @@ namespace Player
             CheckRunButton();
 
             Vector3 movementVector = transform.right * xMovement + transform.forward * zMovement;
-
 
             controller.Move(movementVector * Time.deltaTime * characterSpeed * (running?runMultiplier:1));
         }

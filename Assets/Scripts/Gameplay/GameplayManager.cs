@@ -13,19 +13,28 @@ namespace Gameplay
         [SerializeField] int defaultCountdownTime = 3;
         [Space(5)]
         [SerializeField] UnityEvent startGameEvent;
+        [Header("Skeleton Spawn Definitions")]
+        [SerializeField] Transform[] spawnPositions;
+        [Min(1f)]
+        [SerializeField] float timeBetweenSpawns = 1f;
+        [SerializeField] string[] skeletonPoolTags;
         [Header("General Definitions")]
         [SerializeField] GeneralInfoCanvas generalCanvas;
+        [SerializeField] ObjectPooler objectPooler;
+
+        bool gameIsRunning = false;
 
         void Start()
-        {
-            GameStart();
-        }
-
-        private void GameStart()
         {
             int countdownTime = PlayerPrefs.HasKey("countdownTime") ? PlayerPrefs.GetInt("countdownTime") : defaultCountdownTime;
 
             StartCoroutine(StartCountdown(countdownTime));
+        }
+
+        private void GameStart()
+        {
+            gameIsRunning = true;
+            StartCoroutine(SpawnSkeletons());
         }
 
         private IEnumerator StartCountdown(int countdownTime)
@@ -40,7 +49,19 @@ namespace Gameplay
             }
 
             generalCanvas.HideAlertText();
+            GameStart();
             startGameEvent.Invoke();
+        }
+
+        private IEnumerator SpawnSkeletons()
+        {
+            while (gameIsRunning)
+            {
+                objectPooler.SpawnFromPool(
+                    skeletonPoolTags[Random.Range(0, skeletonPoolTags.Length - 1)],
+                    spawnPositions[Random.Range(0, spawnPositions.Length - 1)]);
+                yield return new WaitForSeconds(timeBetweenSpawns);
+            }
         }
     }
 

@@ -27,6 +27,45 @@ namespace Gameplay
             }
         }
 
+        public GameObject SpawnFromPool(string tag, Vector3 spawnPos, Quaternion spawnRot)
+        {
+            if (!poolDictionary.ContainsKey(tag)) return null;
+
+            GameObject objectToSpawn = poolDictionary[tag].Dequeue();
+
+            objectToSpawn.SetActive(true);
+            objectToSpawn.transform.position = spawnPos;
+            objectToSpawn.transform.rotation = spawnRot;
+
+            IPoolObject iPoolObject = GetComponent<IPoolObject>();
+            if (iPoolObject != null)
+                iPoolObject.OnObjectSpawn(this);
+
+            return objectToSpawn;
+        }
+
+        public GameObject SpawnFromPool(string tag, Transform spawnTransform)
+        {
+            if (!poolDictionary.ContainsKey(tag)) return null;
+
+            GameObject objectToSpawn = poolDictionary[tag].Dequeue();
+
+            objectToSpawn.SetActive(true);
+            objectToSpawn.transform.position = spawnTransform.position;
+            objectToSpawn.transform.rotation = spawnTransform.rotation;
+
+            IPoolObject iPoolObject = GetComponent<IPoolObject>();
+            if (iPoolObject != null)
+                iPoolObject.OnObjectSpawn(this);
+
+            return objectToSpawn;
+        }
+
+        public void EnqueueObject(string tag, GameObject objectToEnqueue)
+        {
+            poolDictionary[tag].Enqueue(objectToEnqueue);
+        }      
+
     }
 
 }
