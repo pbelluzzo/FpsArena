@@ -6,8 +6,20 @@ namespace Gameplay
 {
     public class ObjectPooler : MonoBehaviour
     {
+        public static ObjectPooler instance;
         public List<Pool> pools;
         [SerializeField] Dictionary<string, Queue<GameObject>> poolDictionary;
+
+        private void Awake()
+        {
+            if (instance != null && instance != this)
+            {
+                Destroy(this.gameObject);
+                return;
+            }
+                instance = this;
+        }
+
         void Start()
         {
             poolDictionary = new Dictionary<string, Queue<GameObject>>();
@@ -29,7 +41,11 @@ namespace Gameplay
 
         public GameObject SpawnFromPool(string tag, Vector3 spawnPos, Quaternion spawnRot)
         {
-            if (!poolDictionary.ContainsKey(tag)) return null;
+            if (poolDictionary[tag].Count <= 0)
+            {
+                Debug.LogWarning("Queue with tag " + tag + " is empty");
+                return null;
+            }
 
             GameObject objectToSpawn = poolDictionary[tag].Dequeue();
 
@@ -37,26 +53,50 @@ namespace Gameplay
             objectToSpawn.transform.position = spawnPos;
             objectToSpawn.transform.rotation = spawnRot;
 
-            IPoolObject iPoolObject = GetComponent<IPoolObject>();
+            IPoolObject iPoolObject = objectToSpawn.GetComponent<IPoolObject>();
             if (iPoolObject != null)
-                iPoolObject.OnObjectSpawn(this);
+                iPoolObject.OnObjectSpawn();
 
             return objectToSpawn;
         }
-
         public GameObject SpawnFromPool(string tag, Transform spawnTransform)
         {
-            if (!poolDictionary.ContainsKey(tag)) return null;
+            if (poolDictionary[tag].Count <= 0)
+            {
+                Debug.LogWarning("Queue with tag " + tag + " is empty");
+                return null;
+            }
 
             GameObject objectToSpawn = poolDictionary[tag].Dequeue();
 
-            objectToSpawn.SetActive(true);
             objectToSpawn.transform.position = spawnTransform.position;
             objectToSpawn.transform.rotation = spawnTransform.rotation;
+            objectToSpawn.SetActive(true);
 
-            IPoolObject iPoolObject = GetComponent<IPoolObject>();
+            IPoolObject iPoolObject = objectToSpawn.GetComponent<IPoolObject>();
             if (iPoolObject != null)
-                iPoolObject.OnObjectSpawn(this);
+                iPoolObject.OnObjectSpawn();
+
+            return objectToSpawn;
+        }
+        public GameObject SpawnFromPool(string tag, Transform spawnTransform,  GameObject objectSpawner)
+        {
+            if (poolDictionary[tag].Count <= 0)
+            {
+                Debug.LogWarning("Queue with tag " + tag + " is empty");
+                return null;
+            }
+
+            GameObject objectToSpawn = poolDictionary[tag].Dequeue();
+
+            objectToSpawn.transform.position = spawnTransform.position;
+            objectToSpawn.transform.rotation = spawnTransform.rotation;
+            objectToSpawn.SetActive(true);
+
+            IPoolObject iPoolObject =  objectToSpawn.GetComponent<IPoolObject>();
+
+            if (iPoolObject != null)
+                iPoolObject.OnObjectSpawn( objectSpawner);
 
             return objectToSpawn;
         }

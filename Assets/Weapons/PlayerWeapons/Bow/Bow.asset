@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7deccfe4eb5ebb247b778c3bf9246d7f, type: 3}
+  m_Name: Bow
+  m_EditorClassIdentifier: 
+  damage: 42
+  range: 6
+  cooldown: 2
+  isRanged: 1
+  projectileTag: projectileArrow
+  weaponOverride: {fileID: 0}
+  prefab: {fileID: 6463329637433528929, guid: abef8f6dbf2e35b43b7588e563ecf04a, type: 3}

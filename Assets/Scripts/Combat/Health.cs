@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using Gameplay;
 
 namespace Combat
 {
@@ -9,36 +10,59 @@ namespace Combat
     {
         [Tooltip("Character's current health")]
         [SerializeField] private int health = 100;
-        private void OnValidate() => health = Mathf.Clamp(health, 0, maxHealth);
-
         [Range(1,1000)]
         [SerializeField] private int maxHealth = 100;
 
-        [SerializeField] AudioClip dieSfx;
+        [SerializeField] private bool isPoolObject;
+        [SerializeField] private string poolTag;
 
-        public bool isPlayer = false;
+        private bool isDead = false;
+        private Animator animator;
         [Space(15)]
-        [HideInInspector]
         public UnityEvent dieEvent;
-        public void AddHealth(int value)
+        private void OnValidate() => health = Mathf.Clamp(health, 0, maxHealth);
+        public void SetIsDead(bool value) => isDead = value;
+        public bool GetIsDead() => isDead;
+
+        private void Awake()
         {
-            health = Mathf.Clamp(health + value, 0, maxHealth);
-            CheckHealth();
+            animator = GetComponent<Animator>();
         }
 
-        private void CheckHealth()
+        public bool Heal(int value)
         {
-            if (health <= 0) Die();
+            health = Mathf.Clamp(health + value, 0, maxHealth);
+            return CheckDeath();
+        }
+
+        public bool Damage(int value)
+        {
+            health = Mathf.Clamp(health - value, 0, maxHealth);
+            return CheckDeath();
+        }
+
+        private bool CheckDeath()
+        {
+            if (health <= 0)
+            {
+                Die();
+                return true;
+            }
+            return false;
         }
 
         public void Die()
         {
-            if (dieSfx != null) ; //audioManager.PlayAudio(dieSfx);
+            dieEvent.Invoke();
+            isDead = true;
 
-            if (isPlayer)
-            {
-                
-            }
+            if (isPoolObject)
+                ReturnToQueue();
+        }
+
+        private void ReturnToQueue()
+        {
+            ObjectPooler.instance.EnqueueObject(poolTag, this.gameObject);
         }
     }
 

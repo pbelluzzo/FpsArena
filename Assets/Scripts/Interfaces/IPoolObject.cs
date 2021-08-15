@@ -3,5 +3,5 @@ using Gameplay;
 
 public interface IPoolObject
 {
-    void OnObjectSpawn(ObjectPooler objectPooler);
+    void OnObjectSpawn(GameObject objectSpawner = null);
 }

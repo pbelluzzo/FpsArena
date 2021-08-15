@@ -1,23 +1,25 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Weapon", menuName = "Weapons/Create Weapon", order = 0)]
-public class Weapon : ScriptableObject
-{
-    private AnimatorOverrideController weaponOverride = null;
-    private GameObject prefab;
-    [Min(0)]
-    private int damage;
-    [Min(0)]
-    private int range;
-    public int GetDamage() => damage;
-    public int GetRange() => range;
 
-    public void SpawnWeapon(Transform spawnTransform, Animator animator = null)
+namespace Combat
+{
+    public abstract class Weapon : ScriptableObject
     {
-        Instantiate(prefab, spawnTransform);
-        if (prefab != null)
-            Instantiate(prefab, spawnTransform);
-        if (animator != null)
-            animator.runtimeAnimatorController = weaponOverride;
+        [Min(0)]
+        [SerializeField] protected int damage;
+        [Min(0)]
+        [SerializeField] protected float range;
+        [Min(0)]
+        [SerializeField] protected float cooldown;
+
+        [SerializeField] protected bool isRanged;
+        [Tooltip("Projectile tag from Object Pooler")] 
+        [SerializeField] protected string projectileTag;
+
+        public int GetDamage() => damage;
+        public float GetRange() => range;
+        public float GetCooldown() => cooldown;
+        public bool GetIsRanged() => isRanged;
+        public string GetProjectileTag() => projectileTag;
     }
 }

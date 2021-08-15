@@ -57,6 +57,7 @@ namespace Gameplay
         {
             while (gameIsRunning)
             {
+                Debug.Log("SpawnSkeleton");
                 objectPooler.SpawnFromPool(
                     skeletonPoolTags[Random.Range(0, skeletonPoolTags.Length - 1)],
                     spawnPositions[Random.Range(0, spawnPositions.Length - 1)]);
