@@ -1,7 +1,12 @@
 using UnityEngine;
-using Gameplay;
 
-public interface IPoolObject
+namespace Gameplay.ObjectPooling
 {
-    void OnObjectSpawn(GameObject objectSpawner = null);
+    public interface IPoolObject
+    {
+        void OnObjectSpawn(GameObject objectSpawner = null);
+
+        string GetTag();
+    }
+
 }

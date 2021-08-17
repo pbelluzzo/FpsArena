@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 1841429564}
   - component: {fileID: 1841429565}
   - component: {fileID: 4856045876820158754}
+  - component: {fileID: -6701290755896203573}
   m_Layer: 0
   m_Name: SkeletonFighter
   m_TagString: Untagged
@@ -105,8 +106,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 100
   maxHealth: 100
-  isPoolObject: 1
-  poolTag: blueSkeleton
+  healthBar: {fileID: 0}
   dieEvent:
     m_PersistentCalls:
       m_Calls:
@@ -134,6 +134,18 @@ MonoBehaviour:
           m_StringArgument: die
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: -6701290755896203573}
+        m_TargetAssemblyTypeName: AIDropController, Assembly-CSharp
+        m_MethodName: HandleDrop
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1841429564
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -147,7 +159,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ammo: 0
+  projectileSpawnOffset: 0
+  projectileSpawnTransform: {fileID: 0}
   fighterWeapon: {fileID: 11400000, guid: b9ad0883486a66d4883ce0d06fe9dfb6, type: 2}
+  hitEffectPoolTag: vfxHit
 --- !u!114 &1841429565
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -160,8 +175,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c0ec03d9330f9b479a34de892824776, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: {fileID: 11400000, guid: 2d0ab8dd7b4c184489fff70d66936ddb, type: 2}
-  armor: {fileID: 6416213896799466268}
+  score: 2
+  poolerTag: blueSkeleton
+  spawnEffectPoolTag: spawnFireGreen
 --- !u!136 &4856045876820158754
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -176,6 +192,23 @@ CapsuleCollider:
   m_Height: 1.75
   m_Direction: 1
   m_Center: {x: 0, y: 0.88, z: 0}
+--- !u!114 &-6701290755896203573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6416213895601207261}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 424944c917c5e2e4fa229fc8a9be39cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemDrops:
+  - itemPoolerTag: healthDrop50
+    dropChance: 23
+  - itemPoolerTag: arrowDrop5
+    dropChance: 29.7
 --- !u!1001 &6416213896799565242
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -248,12 +281,6 @@ PrefabInstance:
 --- !u!4 &6416213896799956752 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400042, guid: d5649c135d2e9a84c86dfc8dded11b00,
-    type: 3}
-  m_PrefabInstance: {fileID: 6416213896799565242}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &6416213896799466268 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 100006, guid: d5649c135d2e9a84c86dfc8dded11b00,
     type: 3}
   m_PrefabInstance: {fileID: 6416213896799565242}
   m_PrefabAsset: {fileID: 0}

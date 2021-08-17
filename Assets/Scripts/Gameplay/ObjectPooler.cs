@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Gameplay
+namespace Gameplay.ObjectPooling
 {
     public class ObjectPooler : MonoBehaviour
     {

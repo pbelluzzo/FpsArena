@@ -38,5 +38,16 @@ namespace Movement
 
             GetComponent<Animator>().SetFloat("forwardSpeed", speed);
         }
+
+        // Animation Events
+        void FootL()
+        {
+
+        }
+
+        void FootR()
+        {
+
+        }
     }
 }

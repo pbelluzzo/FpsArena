@@ -12,9 +12,9 @@ public class AIMoverEditor : Editor
         AIMover mover = target as AIMover;
 
 
-        SerializedProperty moveTargetProp = serializedObject.FindProperty("moveTarget");
+        //SerializedProperty moveTargetProp = serializedObject.FindProperty("moveTarget");
 
-        EditorGUILayout.PropertyField(moveTargetProp);
+        //EditorGUILayout.PropertyField(moveTargetProp);
 
 
         this.serializedObject.ApplyModifiedProperties();

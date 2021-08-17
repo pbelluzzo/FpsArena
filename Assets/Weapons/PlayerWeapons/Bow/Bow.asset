@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 42
   range: 6
-  cooldown: 2
+  cooldown: 1.7
   isRanged: 1
   projectileTag: projectileArrow
   weaponOverride: {fileID: 0}

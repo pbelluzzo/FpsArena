@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Sword
   m_EditorClassIdentifier: 
   damage: 12
-  range: 0.7
+  range: 1.5
   cooldown: 1.7
   isRanged: 0
   projectileTag: 

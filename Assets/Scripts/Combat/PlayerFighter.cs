@@ -1,36 +1,48 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Gameplay;
+using Gameplay.ObjectPooling;
+using TMPro;
 
 namespace Combat
 {
-    public class PlayerFighter : Fighter
+    public class PlayerFighter : Fighter, IUseWeapon, IUseAmmo
     {
         [SerializeField] private PlayerWeapon fighterWeapon;
-        [SerializeField] private Transform playerHand;
-        [SerializeField] private float projectileSpawnOffset;
+        [SerializeField] private TextMeshProUGUI ammoText;
 
-        private Transform projectileSpawnTransform;
-
-        public PlayerWeapon GetWeapon() => fighterWeapon;
+        public void AddAmmo(int value)
+        {
+            ammo += value;
+            ammoText.text = ammo.ToString();
+        }
+        public void UseAmmo()
+        {
+            ammo--;
+            ammoText.text = ammo.ToString();
+        }
+        public Weapon GetWeapon() => fighterWeapon;
         void Start()
         {
-            projectileSpawnTransform = playerHand;
-            projectileSpawnTransform.localPosition = new Vector3(playerHand.localPosition.x, playerHand.localPosition.y, playerHand.localPosition.z + projectileSpawnOffset);
-
             if (fighterWeapon != null)
-               fighterWeapon.SpawnWeapon(playerHand);
+               fighterWeapon.SpawnWeapon(projectileSpawnTransform);
+
+            ammoText.text = ammo.ToString();
         }
 
         public void HandleAttack()
         {
             if (timeSinceLastAttack < fighterWeapon.GetCooldown())
                 return;
+
+            if (ammo < 1)
+                return;
+
             timeSinceLastAttack = 0;
+            UseAmmo();
             if (fighterWeapon.GetIsRanged())
             {
-                ObjectPooler.instance.SpawnFromPool(fighterWeapon.GetProjectileTag(), playerHand, this.gameObject);
+                ObjectPooler.instance.SpawnFromPool(fighterWeapon.GetProjectileTag(), projectileSpawnTransform, this.gameObject);
                 fighterWeapon.AnimatorSetTrigger("fire");
             }
         }

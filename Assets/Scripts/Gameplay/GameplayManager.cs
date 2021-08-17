@@ -1,8 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using PlayerInterface;
+using Uinterface;
 using UnityEngine.Events;
+using Gameplay.ObjectPooling;
+using Gameplay.DataManagement;
+using Core;
+using TMPro;
 
 namespace Gameplay
 {
@@ -10,7 +14,9 @@ namespace Gameplay
     {
         [Header("Game Start Definitions")]
         [Tooltip("Default time before game starts. Overwriten by player settings.")]
-        [SerializeField] int defaultCountdownTime = 3;
+        [SerializeField] int countdownTime = 3;
+        [Tooltip("Default game time in seconds. Overwriten by player settings.")]
+        [SerializeField] int gameTime = 180;
         [Space(5)]
         [SerializeField] UnityEvent startGameEvent;
         [Header("Skeleton Spawn Definitions")]
@@ -19,22 +25,34 @@ namespace Gameplay
         [SerializeField] float timeBetweenSpawns = 1f;
         [SerializeField] string[] skeletonPoolTags;
         [Header("General Definitions")]
+        [SerializeField] TextMeshProUGUI gameTimeText;
+        [SerializeField] TextMeshProUGUI scoreText;
+        [SerializeField] GameObject deathPanel;
         [SerializeField] GeneralInfoCanvas generalCanvas;
         [SerializeField] ObjectPooler objectPooler;
 
+        SceneLoader sceneLoader;
         bool gameIsRunning = false;
 
         void Start()
         {
-            int countdownTime = PlayerPrefs.HasKey("countdownTime") ? PlayerPrefs.GetInt("countdownTime") : defaultCountdownTime;
+            gameTime = PlayerPrefs.HasKey("gameTime") ? PlayerPrefs.GetInt("gameTime") : gameTime;
+            countdownTime = PlayerPrefs.HasKey("countdownTime") ? PlayerPrefs.GetInt("countdownTime") : this.countdownTime;
+            sceneLoader = FindObjectOfType<SceneLoader>();
 
             StartCoroutine(StartCountdown(countdownTime));
+        }
+
+        private void Update()
+        {
+            scoreText.text = SessionDataManager.instance.GetScore().ToString();
         }
 
         private void GameStart()
         {
             gameIsRunning = true;
             StartCoroutine(SpawnSkeletons());
+            StartCoroutine(GameTimeCountdown());
         }
 
         private IEnumerator StartCountdown(int countdownTime)
@@ -57,12 +75,35 @@ namespace Gameplay
         {
             while (gameIsRunning)
             {
-                Debug.Log("SpawnSkeleton");
                 objectPooler.SpawnFromPool(
-                    skeletonPoolTags[Random.Range(0, skeletonPoolTags.Length - 1)],
-                    spawnPositions[Random.Range(0, spawnPositions.Length - 1)]);
+                    skeletonPoolTags[Random.Range(0, skeletonPoolTags.Length)],
+                    spawnPositions[Random.Range(0, spawnPositions.Length)]);
                 yield return new WaitForSeconds(timeBetweenSpawns);
             }
+        }
+
+        private IEnumerator GameTimeCountdown()
+        {
+            int i = gameTime;
+            while ( i > 0)
+            {
+                yield return new WaitForSeconds(1);
+                i--;
+                gameTimeText.text = i.ToString();
+            }
+            GameOver();
+        }
+
+        public void GameOver()
+        {
+            StopAllCoroutines();
+            Time.timeScale = 0;
+            deathPanel.SetActive(true);
+        }
+
+        public void ReturnToMenu()
+        {
+            sceneLoader.LoadScene(1);
         }
     }
 

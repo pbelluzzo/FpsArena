@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-namespace PlayerInterface
+namespace Uinterface
 {
     public class GeneralInfoCanvas : MonoBehaviour
     {

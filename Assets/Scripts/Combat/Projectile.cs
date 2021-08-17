@@ -1,4 +1,4 @@
-using Gameplay;
+using Gameplay.ObjectPooling;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,16 +13,27 @@ namespace Combat
         [SerializeField] float damageFactor = 1;
         [Tooltip("Projectile tag in the Object Pooler")]
         [SerializeField] string poolTag;
+        [SerializeField] bool followTarget;
+        [Min (0.1f)]
+        [SerializeField] float lifeTime;
+        [SerializeField] string hitEffectPoolTag;
 
+        private GameObject spawnerObject;
+        private Transform target;
         private Rigidbody projectileRigidbody;
-        private bool isMoving = true;
         private float damage;
 
+        public string GetTag() => poolTag;
         public void OnObjectSpawn(GameObject spawnerObject)
         {
-            damage = (damageFactor * spawnerObject.GetComponent<PlayerFighter>().GetWeapon().GetDamage());
+            this.spawnerObject = spawnerObject;
+            damage = (damageFactor * spawnerObject.GetComponent<IUseWeapon>().GetWeapon().GetDamage());
             projectileRigidbody.velocity = Vector3.zero;
-            projectileRigidbody.AddForce(transform.forward * speed);
+            if (!followTarget)
+            {
+                projectileRigidbody.AddForce(transform.forward * speed);
+                StartCoroutine(ReturnToQueue());
+            }
         }
         
         void Awake()
@@ -30,20 +41,45 @@ namespace Combat
              projectileRigidbody = GetComponent<Rigidbody>();
         }
 
+        private void Update()
+        {
+            if (followTarget && spawnerObject.GetComponent<IUseTarget>() != null)
+            {
+                target = spawnerObject.GetComponent<IUseTarget>().GetTarget();
+                transform.LookAt(target);
+                transform.Translate(Vector3.forward * (speed / 100) * Time.deltaTime);
+            }
+        }
+
+        private IEnumerator ReturnToQueue()
+        {
+            yield return new WaitForSeconds(lifeTime);
+
+            ObjectPooler.instance.EnqueueObject(poolTag, this.gameObject);
+            gameObject.SetActive(false);
+        }
+
         private void OnTriggerEnter(Collider other)
         {
+            if (followTarget && target.gameObject != other.gameObject)
+                return;
+
+            if (other.gameObject.CompareTag("Projectile"))
+                return;
+
+            ObjectPooler.instance.SpawnFromPool(hitEffectPoolTag, transform);
 
             Health health = other.gameObject.GetComponent<Health>();
-
 
             if (health != null)
             {
                 Debug.Log("Causing Damage");
                 health.Damage(Mathf.RoundToInt(damage));
             }
-                isMoving = false;
-                ObjectPooler.instance.EnqueueObject(poolTag, this.gameObject);
-                gameObject.SetActive(false);
+
+            StopCoroutine(ReturnToQueue());
+            ObjectPooler.instance.EnqueueObject(poolTag, this.gameObject);
+            gameObject.SetActive(false);
         }
 
     }

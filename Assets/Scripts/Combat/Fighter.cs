@@ -8,13 +8,12 @@ namespace Combat
     public abstract class Fighter : MonoBehaviour
     {
         [SerializeField] protected int ammo;
+        [SerializeField] protected float projectileSpawnOffset;
+        [SerializeField] protected Transform projectileSpawnTransform;
 
         protected Health health;
         protected float timeSinceLastAttack = 0;
 
-        public void UseAmmo(int ammount) => ammo -= ammount;
-        public void AddAmmo(int ammount) => ammo += ammount;
-        public void SetAmmo(int ammount) => ammo = ammount;
         void Start()
         {
             health = GetComponent<Health>();
